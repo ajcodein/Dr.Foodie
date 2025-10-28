@@ -37,26 +37,32 @@ Dr Foodie is an intelligent, AI-powered web application designed to provide user
 
 - An active internet connection.
 - A modern web browser.
-- A **Google Gemini API Key**. You can get one from [Google AI Studio](https://aistudio.google.com/).
 
-### Installation & Setup
+### Running the App
 
-1.  **Clone the repository (or download the files):**
+This application is ready to run in the current environment. The **Google Gemini API Key is provided automatically and securely** as an environment variable (`process.env.API_KEY`), so no manual setup is required.
+
+### Local Development Setup (Optional)
+
+If you wanted to run this project on your own machine, you would follow these steps:
+
+1.  **Get an API Key**:
+    You'll need a **Google Gemini API Key**. You can get one from [Google AI Studio](https://aistudio.google.com/).
+
+2.  **Clone the repository:**
     ```bash
     git clone https://github.com/your-username/dr-foodie.git
     cd dr-foodie
     ```
 
-2.  **Set up your API Key:**
-    The application loads the API key from `process.env.API_KEY`. You will need to configure this environment variable in your development environment. For example, you could use a `.env` file and a library like `dotenv`.
-
+3.  **Set up your API Key:**
     Create a file named `.env` in the project root and add your key:
     ```
     API_KEY=YOUR_GEMINI_API_KEY_HERE
     ```
 
-3.  **Install dependencies and run the project:**
-    This project is set up to run in an environment with pre-bundled dependencies (like the one it was built in). If you were to run it locally with a standard Node.js setup, you would typically run:
+4.  **Install dependencies and run the project:**
+    This project is set up to run in an environment with pre-bundled dependencies. On your local machine, you would typically run:
     ```bash
     npm install
     npm run dev
