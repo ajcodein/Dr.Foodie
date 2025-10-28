@@ -4,6 +4,8 @@ Dr Foodie is an intelligent, AI-powered web application designed to provide user
 
 ![Dr Foodie Screenshot](https://storage.googleapis.com/aistudio-hosting/workspace-storage/e0b19231-3c58-45e0-811e-08709559c55b/dr-foodie-screenshot.png)
 
+https://dr-foodie-be1xdf1wz-ajeshs-projects-04780abc.vercel.app/
+
 ## ✨ Features
 
 - **Smart Search**: Get detailed nutritional analysis for any food by simply typing its name.
