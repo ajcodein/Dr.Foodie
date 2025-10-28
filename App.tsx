@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import type { FoodInfo, ComparisonFoodInfo } from './types';
-import { getFoodInfo, generateImage } from './services/geminiService';
+import { getFoodInfo, generateImage, compareFoods } from './services/geminiService';
 import { SunIcon, MoonIcon, SearchIcon, LeafIcon } from './components/icons';
 import { FoodCard } from './components/FoodCard';
 import { ComparisonView } from './components/ComparisonView';
@@ -17,6 +17,7 @@ const Header: React.FC<{ theme: string; onThemeToggle: () => void }> = ({ theme,
             <button
                 onClick={onThemeToggle}
                 className="p-2 rounded-full text-light-text dark:text-dark-text bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors"
+                aria-label="Toggle theme"
             >
                 {theme === 'light' ? <MoonIcon className="w-5 h-5" /> : <SunIcon className="w-5 h-5" />}
             </button>
@@ -45,9 +46,10 @@ const Hero: React.FC<{ onSearch: (query: string) => void; isLoading: boolean }> 
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        placeholder="e.g., 'avocado' or 'Is salmon healthy?'"
+                        placeholder="e.g., 'avocado' or 'apple vs orange'"
                         className="w-full pl-12 pr-4 py-3 rounded-full bg-white dark:bg-slate-800 border-2 border-transparent focus:border-primary focus:ring-primary transition shadow-md"
                         disabled={isLoading}
+                        aria-label="Search for a food or comparison"
                     />
                     <SearchIcon className="w-6 h-6 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
                     <button type="submit" disabled={isLoading} className="absolute right-2 top-1/2 -translate-y-1/2 bg-primary text-white font-bold px-6 py-2 rounded-full hover:bg-primary-dark transition-transform transform hover:scale-105 disabled:bg-gray-400 disabled:scale-100">
@@ -119,15 +121,42 @@ const App: React.FC = () => {
     const handleSearch = useCallback(async (query: string) => {
         setIsLoading(true);
         setError(null);
-        setFoodData(null);
-        try {
-            const data = await getFoodInfo(query);
-            const imageBase64 = await generateImage(data.imageQuery);
-            setFoodData({ ...data, imageBase64 });
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
+
+        const foodNames = query
+            .split(/ vs | versus | and |,| compare /i)
+            .map(name => name.trim())
+            .filter(Boolean);
+
+        if (foodNames.length > 1) {
+            // Comparison search
+            setFoodData(null);
+            try {
+                const comparisonData = await compareFoods(foodNames);
+                const itemsWithImages = await Promise.all(
+                    comparisonData.map(async (food) => {
+                        const imageBase64 = await generateImage(food.imageQuery);
+                        return { ...food, imageBase64 };
+                    })
+                );
+                setComparisonList(itemsWithImages);
+            } catch (err: any) {
+                setError(err.message);
+                setComparisonList([]);
+            } finally {
+                setIsLoading(false);
+            }
+        } else {
+            // Single food search
+            setFoodData(null);
+            try {
+                const data = await getFoodInfo(query);
+                const imageBase64 = await generateImage(data.imageQuery);
+                setFoodData({ ...data, imageBase64 });
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
         }
     }, []);
 
@@ -170,7 +199,7 @@ const App: React.FC = () => {
                         </div>
                     )}
                     {error && (
-                        <div className="text-center bg-red-100 dark:bg-red-900/50 border border-red-400 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg max-w-lg mx-auto animate-fade-in">
+                        <div className="text-center bg-red-100 dark:bg-red-900/50 border border-red-400 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg max-w-lg mx-auto animate-fade-in" role="alert">
                             <strong className="font-bold">Oops! </strong>
                             <span className="block sm:inline">{error}</span>
                         </div>
