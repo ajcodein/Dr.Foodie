@@ -83,6 +83,7 @@ const foodComparisonSchema = {
 
 
 export const getFoodInfo = async (foodName: string): Promise<FoodInfo> => {
+    // FIX: The GoogleGenAI constructor requires an object with the apiKey.
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const prompt = `Provide a detailed nutritional analysis for ${foodName}. Ensure all data is accurate, science-based, and presented per 100g serving.`;
     
@@ -109,6 +110,7 @@ export const compareFoods = async (foodNames: string[]): Promise<ComparisonFoodI
         throw new Error("At least two foods are required for comparison.");
     }
     
+    // FIX: The GoogleGenAI constructor requires an object with the apiKey.
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const prompt = `Provide a nutritional comparison for the following foods: ${foodNames.join(', ')}. Focus on calories, protein, carbs, and fat per 100g serving.`;
 
@@ -131,6 +133,7 @@ export const compareFoods = async (foodNames: string[]): Promise<ComparisonFoodI
 };
 
 export const generateImage = async (prompt: string): Promise<string> => {
+    // FIX: The GoogleGenAI constructor requires an object with the apiKey.
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     try {
         const response = await ai.models.generateContent({
