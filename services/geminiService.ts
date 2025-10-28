@@ -1,10 +1,6 @@
 import { GoogleGenAI, Type, Modality } from "@google/genai";
 import type { FoodInfo, ComparisonFoodInfo } from '../types';
 
-if (!process.env.API_KEY) {
-    throw new Error("API_KEY environment variable is not set.");
-}
-
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const foodInfoSchema = {
