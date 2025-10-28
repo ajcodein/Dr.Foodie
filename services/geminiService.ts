@@ -1,8 +1,6 @@
 import { GoogleGenAI, Type, Modality } from "@google/genai";
 import type { FoodInfo, ComparisonFoodInfo } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 const foodInfoSchema = {
   type: Type.OBJECT,
   properties: {
@@ -85,6 +83,7 @@ const foodComparisonSchema = {
 
 
 export const getFoodInfo = async (foodName: string): Promise<FoodInfo> => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const prompt = `Provide a detailed nutritional analysis for ${foodName}. Ensure all data is accurate, science-based, and presented per 100g serving.`;
     
     try {
@@ -110,6 +109,7 @@ export const compareFoods = async (foodNames: string[]): Promise<ComparisonFoodI
         throw new Error("At least two foods are required for comparison.");
     }
     
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const prompt = `Provide a nutritional comparison for the following foods: ${foodNames.join(', ')}. Focus on calories, protein, carbs, and fat per 100g serving.`;
 
     try {
@@ -131,6 +131,7 @@ export const compareFoods = async (foodNames: string[]): Promise<ComparisonFoodI
 };
 
 export const generateImage = async (prompt: string): Promise<string> => {
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash-image',
